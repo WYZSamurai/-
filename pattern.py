@@ -3,7 +3,7 @@ import torch
 
 
 # 线阵，等间距，等幅同相
-# dna(m,n,L) Fdb(delta,)
+# dna(1,1,L) Fdb(delta,)
 def pattern(dna: torch.Tensor, l: float, d: float, delta: int, theta_0: float) -> None:
     M = dna.shape[2]
     ex = dna.reshape(M,)

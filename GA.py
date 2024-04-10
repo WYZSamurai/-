@@ -29,6 +29,8 @@ def decode(dna: torch.Tensor, l: float, d: float, delta: int, theta_0: float):
         fit = fit/fit.sum()
     else:
         fit = (fit-fit[minindex])/(fit[maxindex]-fit[minindex])
+
+    print("此代最佳msll为：", ybest)
     return fit, ybest, dnabest
 
 
