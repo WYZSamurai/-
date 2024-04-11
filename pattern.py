@@ -4,21 +4,23 @@ import torch
 
 # 线阵，等间距，等幅同相
 # dna(1,1,L) Fdb(delta,)
-def pattern(dna: torch.Tensor, l: float, d: float, delta: int, theta_0: float) -> None:
+def pattern(dna: torch.Tensor, l: float, d: float, delta: int, theta_0: float):
     M = dna.shape[2]
-    ex = dna.reshape(M,)
+    ex = torch.complex(dna.reshape(M, 1), torch.zeros((M, 1)))
     k = 2*torch.pi/l
-    theta_0 = (torch.tensor(theta_0)*torch.pi)/180
-
+    theta_0 = torch.tensor(theta_0)*torch.pi/180
     theta = torch.linspace(-torch.pi/2, torch.pi/2, delta)
-    F = torch.zeros((delta,))
-    for i in range(delta):
-        phi = (k*d * torch.arange(
-            0, M))*(torch.sin(theta[i])-torch.sin(theta_0)).to(dtype=torch.float)
-        temp = torch.exp(torch.complex(
-            torch.zeros(M,).to(dtype=torch.float), phi))
-        F[i] = torch.abs(torch.sum(temp*ex))
+
+    phi = (torch.sin(theta)-torch.sin(theta_0)).reshape(delta, 1)
+    phi = torch.matmul(phi, torch.ones(1, M))
+
+    nd = k*d*torch.arange(0, M).reshape(1, M)
+    nd = torch.matmul(torch.ones(delta, 1), nd)
+
+    phi = torch.exp(torch.complex(torch.zeros((delta, M)), phi*nd))
+    F = torch.matmul(phi, ex).abs().reshape(delta,)
     Fdb = 20*torch.log10(F/F.max())
+    # print("Fdb为：\n", Fdb)
     return Fdb
 
 
@@ -43,4 +45,17 @@ def plot(Fdb: torch.Tensor, delta: int, theta_min: float, theta_max: float):
 
 
 if __name__ == "__main__":
-    pass
+    theta_min = -90.0
+    theta_max = 90.0
+    (l, delta, theta_0) = (1, 360, 0)
+    d = l/2
+    G = 5
+    NP = 100
+    m = 1
+    n = 1
+    L = 20
+    Pc = 0.8
+    Pm = 0.050
+    dna = torch.randint(0, 2, (m, n, L)).to(dtype=torch.float)
+    Fdb = pattern(dna, l, d, delta, theta_0)
+    print(Fdb)

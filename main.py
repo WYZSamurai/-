@@ -8,11 +8,11 @@ theta_min = -90.0
 theta_max = 90.0
 (l, delta, theta_0) = (1, 360, 0)
 d = l/2
-G = 5
+G = 200
 NP = 100
 m = 1
 n = 1
-L = 20
+L = 40
 Pc = 0.8
 Pm = 0.050
 dna = torch.randint(0, 2, (NP, m, n, L)).to(dtype=torch.float)
