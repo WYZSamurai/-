@@ -15,6 +15,7 @@ n = 1
 L = 40
 Pc = 0.8
 Pm = 0.050
+# dna(NP, m, n, L)
 dna = torch.randint(0, 2, (NP, m, n, L)).to(dtype=torch.float)
 
 
